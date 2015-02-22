@@ -984,6 +984,8 @@ mw.loader.using( ['jquery.ui.dialog', 'mediawiki.api', 'mediawiki.ui','jquery.ch
 		(function(){
 			var namespace = mw.config.get('wgCanonicalNamespace');
 			//Temporarily removing namespace check
+			var namespace = mw.config.values['wgPageName'].split('/')[0];
+			//Use the above to check if the gadget has to be enabled or not on a given page.
 			if ( true ){
 				var api = new mw.Api();
 				var utility = formsGadget.utilities;
