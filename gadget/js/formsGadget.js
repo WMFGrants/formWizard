@@ -982,9 +982,9 @@ var formsGadget = {
 mw.loader.using( ['jquery.ui.dialog', 'mediawiki.api', 'mediawiki.ui','jquery.chosen'], function() {	
 	$(function() {
 		(function(){
-			var namespace = mw.config.get('wgCanonicalNamespace');
 			//Temporarily removing namespace check
 			var namespace = mw.config.values['wgPageName'].split('/')[0];
+			// namespace == 'Wikipedia:Co-op'
 			//Use the above to check if the gadget has to be enabled or not on a given page.
 			if ( true ){
 				var api = new mw.Api();
