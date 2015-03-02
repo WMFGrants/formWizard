@@ -422,7 +422,8 @@ var formsGadget = {
 			var link = document.createElement('a');
 			link.href = 'href' in dict? dict['href'] : 'https://commons.wikimedia.org/wiki/Main_Page';
 			link.target = '_blank';
-			link.innerText = 'link' in dict? dict['link'] : 'Search Wikimedia Commons for an image';
+			var innerText = 'link' in dict? dict['link'] : 'Search Wikimedia Commons for an image';
+			$(link).text(innerText);
 			return link;
 		},
 		'image': function (dict) {
