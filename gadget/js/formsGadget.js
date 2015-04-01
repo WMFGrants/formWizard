@@ -9,6 +9,7 @@
  * "Forms" feature, to be used by the Wikimedia Foundation's Grants Programme
  */
 //<nowiki>
+//The location of the css style sheets
 importStylesheet('User:Jeph_paul/formsGadget.css');
 var formsGadget = {
 	'that' : this,
@@ -53,6 +54,9 @@ var formsGadget = {
 		$('#formsDialogExpand').html('');
 	},
 	'utilities' : {
+		/*
+		 * Path to the gadget config file
+		 */
 		'configPath' : 'Wikipedia:Co-op/Config/Co-op',
 		'getPageTitle': function(){
 			return true;
@@ -126,6 +130,8 @@ var formsGadget = {
 		 * Stepper list
 		 * Image/s
 		 * Dropdown
+		 * Link
+		 * Text
 		 */
 		'hiddenInfoboxFields' : [],
 		'found' : false,
@@ -160,7 +166,8 @@ var formsGadget = {
 		},
 		'checkTitle' : function(string,exists,titleStem,type){
 			var that = this;
-			var apiUrl = 'https://test.wikipedia.org/w/api.php?callback=?';
+			//Url to the api
+			var apiUrl = 'https://en.wikipedia.org/w/api.php?callback=?';
 			var title = titleStem + string;
 			var searchDict = {
 					'action':'query',
@@ -291,10 +298,9 @@ var formsGadget = {
 	 			else{
 	 				if( 'validate' in dict && enteredString){
 		 				var exists = dict['validate'] == 'exists' ? 1:0;
-		 				//$(this).addClass(checkTitle(enteredString,exists));
 		 				var titleStem = 'image' in dict ? '' : that.formDict.config['page-home'];
 		 				$.when(that.checkTitle(enteredString,exists,titleStem,dict['type'])).then(function(){
-		 					//Cleanpup & remove redundant code
+		 					//Cleanup & remove redundant code
 		 					$(inputTextBox).removeClass('entrySatisfying entryNotSatisfying');
 		 					$(inputTextBox).addClass(that.found ? 'entrySatisfying' : 'entryNotSatisfying');
 		 					$(inputTextBox).parent().removeClass('entrySatisfying entryNotSatisfying');
@@ -302,7 +308,8 @@ var formsGadget = {
 		 					if (that.found){
 		 						$('#formsDialogExpand [elemType="button"]').trigger('enableButtons');
 			 					if(typeof(callback) === 'function' && that.found){
-			 						var apiUrl = 'https://test.wikipedia.org/w/api.php?callback=?';
+			 						//Api url
+			 						var apiUrl = 'https://en.wikipedia.org/w/api.php?callback=?';
 			 						$.getJSON(apiUrl,{'action':'parse',
 			 									'format':'json',
 			 									'text':'[['+enteredString+']]'
@@ -563,12 +570,10 @@ var formsGadget = {
 			    'before' : markup.slice(0,startIndex),
 				'after' : markup.slice(endIndex),
 			};
-			//return markup.slice(startIndex,endIndex);
 			return infobox;
 		},
 		'infoboxObjectify': function(infoboxString){
 			var paramRe = /( )*\|( )*[A-Za-z0-9_]+( )*=/gi;
-			//this.extractInfoboxString(wikitext);
 			var units = infoboxString.split('\n');
 			var infobox = [];
 			var infoboxParams = {};
@@ -659,7 +664,7 @@ var formsGadget = {
 			//Disabling buttons on ajax post 
 			$('#formsDialogExpand [elemType="button"]').trigger('disableButtons');
 			
-			//should not hard code '/Toolkit'
+			//refractor hardcoding '/Toolkit'
 			var title = mw.config.get('wgPageName').replace('/Toolkit','');
 			//Getting the infobox
 			var gettingInfobox = api.get({
@@ -717,7 +722,6 @@ var formsGadget = {
 							api.post({
 								'action' : 'edit',
 								'title' : title,
-								//'text' : sections,
 								'summary' : that.createEditSummary(title,'editing section'),
 								'appendtext':newSections,
 								'watchlist':'watch',
@@ -795,11 +799,10 @@ var formsGadget = {
 			for(entry in hiddenFields){
 				infobox = infobox + '|' + hiddenFields[entry]['key'] + '=' + hiddenFields[entry]['value'] + '\n';
 			}
+			
 			//Hardcoding creator/timestamp
-
 			infobox = infobox + '|' + 'timestamp = ~~~~~' + '\n' ;
 			infobox = infobox + '|' + 'creator = ' + mw.user.getName() + '\n' ;
-			//infobox = infobox.join('');
 
 			var probox = this.formDict.config['infobox'] ? this.formDict.config['infobox'] : 'Probox/Idealab';
 			infobox = '{{' + probox + '\n' + infobox + '}} \n';
@@ -987,12 +990,12 @@ mw.loader.using( ['jquery.ui.dialog', 'mediawiki.api', 'mediawiki.ui','jquery.ch
 			var namespace = mw.config.values['wgPageName'].split('/')[0];
 			// namespace == 'Wikipedia:Co-op'
 			//Use the above to check if the gadget has to be enabled or not on a given page.
-			if ( true ){
+			if ( namespace == 'Wikipedia:Co-op' ){
 				var api = new mw.Api();
 				var utility = formsGadget.utilities;
-				//Showing Post edit feedback if any
+				//Retrieving the post edit feedback if any
 				var postEditMessage = formsGadget.utilities.checkPostEditFeedbackCookie('formsGadgetNotify');
-               	//Show post edit message
+               	//displaying the post edit message
                	if(postEditMessage){
 					mw.notify(postEditMessage,{autoHide:false});
                	}
@@ -1010,8 +1013,8 @@ mw.loader.using( ['jquery.ui.dialog', 'mediawiki.api', 'mediawiki.ui','jquery.ch
 					$('#formsDialogExpand .loading').show();
 					
 					var configFullPath = utility.configPath+'/'+formsGadgetType;
-					var configUrl = 'https://test.wikipedia.org/w/index.php?title='+configFullPath+'&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400';
-					//Get the config for the detected language
+					var configUrl = 'https://en.wikipedia.org/w/index.php?title='+configFullPath+'&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400';
+					//Get the config for the language above
 					$.when(jQuery.getScript(configUrl)).then(function(){
 						var config = utility.stripWhiteSpace(formsGadgetConfig[formsGadgetMode]);
 						formsGadget['formDict'] = config;
