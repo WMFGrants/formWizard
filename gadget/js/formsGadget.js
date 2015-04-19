@@ -75,7 +75,8 @@ var formsGadget = {
 			return mw.config.get('wgContentLanguage');
 		},
 		/*
-		 * To remove extra spaces & cleanup the comment string
+		 * Removes leading/trailing spaces & user signature
+		 * ( It is added through the code)
 		 */
 		'cleanupText' : function(text){
 				text = $.trim(text)+' ';
