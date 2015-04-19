@@ -9,8 +9,6 @@
  * "Forms" feature, to be used by the Wikimedia Foundation's Grants Programme
  */
 //<nowiki>
-//The location of the css style sheets
-importStylesheet('User:Jeph_paul/formsGadget.css');
 var formsGadget = {
 	'createDialog' : function(){
 		var that = this;
@@ -945,57 +943,55 @@ var formsGadget = {
 		};
 	}
 };
-
-mw.loader.using( ['jquery.ui.dialog', 'mediawiki.api', 'mediawiki.ui','jquery.chosen'], function() {	
-	$(function() {
-		(function(){
-			//Temporarily removing namespace check
-			var namespace = mw.config.values['wgPageName'].split('/')[0];
-			// namespace == 'Wikipedia:Co-op'
-			//Use the above to check if the gadget has to be enabled or not on a given page.
-			if ( namespace == 'Wikipedia:Co-op' ){
-				var api = new mw.Api();
-				var utility = formsGadget.utilities;
+	
+$(function() {
+	(function(){
+		//Temporarily removing namespace check
+		var namespace = mw.config.values['wgPageName'].split('/')[0];
+		// namespace == 'Wikipedia:Co-op'
+		//Use the above to check if the gadget has to be enabled or not on a given page.
+		if ( namespace == 'Wikipedia:Co-op' ){
+			var api = new mw.Api();
+			var utility = formsGadget.utilities;
+			
+			//Retrieving the post edit feedback if any
+			var postEditMessage = mw.cookie.get('formsGadgetNotify');
+			if (postEditMessage){
+				//clearing the cookie
+				mw.cookie.set('formsGadgetNotify', null);
 				
-				//Retrieving the post edit feedback if any
-				var postEditMessage = mw.cookie.get('formsGadgetNotify');
-				if (postEditMessage){
-					//clearing the cookie
-					mw.cookie.set('formsGadgetNotify', null);
-					
-               		//displaying the post edit message
-					mw.notify(postEditMessage,{autoHide:false});
-               	}
+           		//displaying the post edit message
+				mw.notify(postEditMessage,{autoHide:false});
+           	}
 
-				$('.wp-formsGadget').click(function(e){
-					e.preventDefault();
-					
-					formsGadgetType = $(this).attr('data-type') || 'Idea';
-					formsGadgetMode = $(this).attr('data-mode') || 'create';
-					
-					formsGadget.cleanupDialog();
+			$('.wp-formsGadget').click(function(e){
+				e.preventDefault();
+				
+				formsGadgetType = $(this).attr('data-type') || 'Idea';
+				formsGadgetMode = $(this).attr('data-mode') || 'create';
+				
+				formsGadget.cleanupDialog();
+				formsGadget.openDialog();
+				formsGadget.openPanel();
+				
+				$('#formsDialogExpand .loading').show();
+				
+				var configFullPath = utility.configPath+'/'+formsGadgetType;
+				var configUrl = 'https://en.wikipedia.org/w/index.php?title='+configFullPath+'&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400';
+				//Get the config for the language above
+				$.when(jQuery.getScript(configUrl)).then(function(){
+					var config = utility.stripWhiteSpace(formsGadgetConfig[formsGadgetMode]);
+					formsGadget['formDict'] = config;
+					//Cleanup
+					$('.formsGadget .ui-dialog-title').text(config.config['dialog-title']);
+					formsGadget['wikiSectionTree'] = new formsGadget.Tree();
 					formsGadget.openDialog();
-					formsGadget.openPanel();
-					
-					$('#formsDialogExpand .loading').show();
-					
-					var configFullPath = utility.configPath+'/'+formsGadgetType;
-					var configUrl = 'https://en.wikipedia.org/w/index.php?title='+configFullPath+'&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400';
-					//Get the config for the language above
-					$.when(jQuery.getScript(configUrl)).then(function(){
-						var config = utility.stripWhiteSpace(formsGadgetConfig[formsGadgetMode]);
-						formsGadget['formDict'] = config;
-						//Cleanup
-						$('.formsGadget .ui-dialog-title').text(config.config['dialog-title']);
-						formsGadget['wikiSectionTree'] = new formsGadget.Tree();
-						formsGadget.openDialog();
-						formsGadget.createForm(config);
-						formsGadget.type = formsGadgetMode;
-						formsGadget.openDialog();
-						$('#formsDialogExpand .loading').hide();
-					});
+					formsGadget.createForm(config);
+					formsGadget.type = formsGadgetMode;
+					formsGadget.openDialog();
+					$('#formsDialogExpand .loading').hide();
 				});
-			}
-		})();
-	});
+			});
+		}
+	})();
 });
