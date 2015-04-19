@@ -12,7 +12,6 @@
 //The location of the css style sheets
 importStylesheet('User:Jeph_paul/formsGadget.css');
 var formsGadget = {
-	'that' : this,
 	'createDialog' : function(){
 		var that = this;
 		var dialogDict = {
@@ -23,15 +22,17 @@ var formsGadget = {
 							modal: true,
 							closeOnEscape: true,
 							resizable: false,
+						
 							draggable: false,
 					};
-		if($('#formsDialogExpand').length){
-			this.dialog = $('#formsDialogExpand').dialog(dialogDict);
+		var dialog = $('#formsDialogExpand');
+		if(dialog.length){
+			this.dialog = dialog.dialog(dialogDict);
 		}
 		else{
 			this.dialog = $('<div id="formsDialogExpand"></div>').dialog(dialogDict);
 		}
-		$('#formsDialogExpand').append('<div class="loading"></div>');
+		dialog.append('<div class="loading"></div>');
 			
 	},
 	'dialog' : null,
@@ -51,16 +52,13 @@ var formsGadget = {
 			this.dialog.dialog('destroy');	
 		}
 		this.dialog = null;
-		$('#formsDialogExpand').html('');
+		$('#formsDialogExpand').text('');
 	},
 	'utilities' : {
 		/*
 		 * Path to the gadget config file
 		 */
 		'configPath' : 'Wikipedia:Co-op/Config/Co-op',
-		'getPageTitle': function(){
-			return true;
-		},
 		'grantType' : function(){
 			var grant = mw.config.get('wgTitle').split('/')[0].replace(/ /g,'_');
 			return grant;
@@ -102,23 +100,6 @@ var formsGadget = {
 			}
 			return dict;
 		},
-		'setPostEditFeedbackCookie' : function(key,value){
-			$.cookie(key, value, {'path':'/'});
-		},
-		/*
-		 * This function is used to check if a has been set by the above function 
-		 * to show the speech bubble on page reload
-		 */
-		'checkPostEditFeedbackCookie' : function(key){
-			var value = $.cookie(key);
-			if(value){
-				$.cookie(key, null, {'path':'/'});
-				return value;
-			}
-			else{
-				return false;
-			}
-		}
 	},
 	'formElement' : {
 		/*
@@ -142,7 +123,6 @@ var formsGadget = {
 			'title': 'Textbox',
 			'characterLength':100,
 			'mandatory':false,
-			//'validate': '',
 			'error-messageLength': 'Max length reached',
 			'error-notFilled': 'Mandatory field',
 			'value': '',
@@ -206,28 +186,28 @@ var formsGadget = {
 			this.addDescription(dict,div);
 			for (elem in list){
 				var label = document.createElement('div');
-				var checkbox = document.createElement('input');
+				var input = document.createElement('input');
 				var key = list[elem]['key'];
 				var value = list[elem]['value'];
-				checkbox.type = type;
+				input.type = type;
 				if (type == 'number'){
-					checkbox.min = dict['min'];
-					checkbox.max = dict['max'];
+					input.min = dict['min'];
+					input.max = dict['max'];
 				}
-				checkbox.value = value;
-				checkbox.setAttribute('data-add-to',dict['add-to']);
+				input.value = value;
+				input.setAttribute('data-add-to',dict['add-to']);
 				if(role){
-					checkbox.setAttribute('data-role',true);
+					input.setAttribute('data-role',true);
 				}
-				checkbox.className = 'inputListItem';
+				input.className = 'inputListItem';
 				
-				checkbox.setAttribute('data-add-to-attribute',key);
+				input.setAttribute('data-add-to-attribute',key);
 				var descriptionText = key.replace(/_/g,' ');
 				descriptionText = descriptionText.slice(0,1).toUpperCase() + descriptionText.slice(1);
 				var description = document.createElement('span');
 				description.className = 'inputListItemDescription';
 				description.textContent = descriptionText;
-				label.appendChild(checkbox);
+				label.appendChild(input);
 				label.appendChild(description);
 				div.appendChild(label);
 			}
@@ -274,10 +254,9 @@ var formsGadget = {
 	 			input.id = dict['id'];
 	 		}
 	 		
-	 		input.setAttribute('type','textbox');
 	 		input.setAttribute('class',className);
 	 		input.setAttribute('placeholder',config['placeholder']);
-	 		input.setAttribute('data-character-length',config['characterLength']);
+	 		input.setAttribute('maxlength',config['characterLength']);
 	 		input.setAttribute('data-mandatory',config['mandatory']);
 	 		input.setAttribute('data-comment',config['comment']);
 	 		input.setAttribute('data-add-to',config['add-to']);
@@ -315,11 +294,11 @@ var formsGadget = {
 			 									'text':'[['+enteredString+']]'
 			 								},function(data){
 			 									console.log(data['parse']['text']['*']); 
-			 									var src = $('<div>').html(data['parse']['text']['*']).find('img').attr('src');
+			 									var src = $('<div>').text(data['parse']['text']['*']).find('img').attr('src');
 			 									if(src){
-			 										callback(element,'https:'+src);
+			 										callback(element, src);
 			 									}
-			 									});
+			 								});
 			 					}
 		 					}
 		 					else{
@@ -328,12 +307,6 @@ var formsGadget = {
 		 				});
 	 				}	
 	 			}
-	 			//Cleanup & trigger event for limit reached
-	 			$(this).removeClass('mandatoryClass');
-	 			if ($(this).val().length > config['characterLength']){
-	 				$(this).val($(this).val().substring(0,config['characterLength']));
-	 			}
-
 	 		});
 	 		//To show validation
 	 		
@@ -367,7 +340,7 @@ var formsGadget = {
 		
 		'addText': function(container,text,type){
 			var textHolder = $('<p>');
-			textHolder.html(text);
+			textHolder.text(text);
 			if (type == 'title'){
 				textHolder.addClass('title');
 			}
@@ -382,7 +355,7 @@ var formsGadget = {
 		},
 		'text': function(dict){
 			var textHolder = $('<p>');
-			return textHolder.html(dict['string'])[0];
+			return textHolder.text(dict['string'])[0];
 		},
 		'stepperList': function (dict) {
 			var list = dict['choiceList'];
@@ -401,27 +374,15 @@ var formsGadget = {
 			this.addDescription(dict,div);
 			var values = dict['values'];
 			var select = document.createElement('select');
-			select.setAttribute('type','textbox');
 	 		select.setAttribute('class','dropdown');
 	 		select.setAttribute('data-placeholder',dict['placeholder']);
 	 		select.setAttribute('data-add-to',dict['add-to']);
 	 		select.setAttribute('data-add-to-attribute',dict['infobox-param']);
 			var option;
 			for (elem in values){
-				/*
-				option = document.createElement('option');
-				option.value = values[elem];
-				option.innerText = values[elem];
-				select.appendChild(option);
-				*/
-				option = $('<option>').attr('value',values[elem]).html(values[elem]);
+				option = $('<option>').attr('value',values[elem]).text(values[elem]);
 				select.appendChild(option[0]);
-			}
-			/*
-			$('.formsGadget .dropdown').chosen({
-								disable_search: true,
-								width: '50%',
-							})*/
+			}			
 			div.appendChild(select);
 			return div;
 		},
@@ -450,9 +411,8 @@ var formsGadget = {
 			//cleanup
 			dict['image'] = true;
 			var textbox = this.smallTextBox(dict,function(elem,src){
-				img.src = src;
-			},img);
-			var description = document.createTextNode(text);
+					img.src = src;
+				},img);
 			div.appendChild(img);
 			div.appendChild(textbox);
 			var commonsLink = this.link(dict);
@@ -732,13 +692,11 @@ var formsGadget = {
 								var postEditMessage = formsGadget.formDict['config']['post-edit'];
 								//Cleanup
 								formsGadget.dialog.dialog('close');
-								formsGadget.utilities.setPostEditFeedbackCookie('formsGadgetNotify',postEditMessage);
+								mw.cookie.set('formsGadgetNotify',postEditMessage);
 								window.location.href = location.origin + '/wiki/' + title;
 							});
 						});
 					});
-			$.when(gettingInfobox).then(function(){
-			});	
 		},
 		'createWikiPage' :  function(){
 			var that = this;
@@ -850,7 +808,7 @@ var formsGadget = {
 						$.when(createToolkit).then(function(){
 							formsGadget.dialog.dialog('close');
 							var postEditMessage = formsGadget.formDict['config']['post-edit'];
-							formsGadget.utilities.setPostEditFeedbackCookie('formsGadgetNotify',postEditMessage);
+							mw.cookie.set('formsGadgetNotify',postEditMessage);
 							window.location.href = location.origin + '/wiki/' + title;
 						},function(){
 							$('#formsDialogExpand [elemType="button"]').trigger('enableButtons');
@@ -919,12 +877,12 @@ var formsGadget = {
 						});
 		return true;
 	},
-	'tree' : function(){
+	'Tree' : function(){
 		var rootList = {};
 		var nodeList = {};
 		this.sections = '';
 		this.roots = rootList;
-		var node = function(parent,child,id){
+		var Node = function(parent,child,id){
 			this.parent = parent;
 			this.id = id;
 			this.child = child;
@@ -934,10 +892,10 @@ var formsGadget = {
 				return nodeList[id];
 			}
 			else{
-				var Node = new node(null,null,id);
-				nodeList[id] = Node;
-				rootList[id] = Node;
-				return Node;
+				var node = new Node(null,null,id);
+				nodeList[id] = node;
+				rootList[id] = node;
+				return node;
 			}
 		};
 		this.addLink = function(startId,endId){
@@ -993,10 +951,14 @@ mw.loader.using( ['jquery.ui.dialog', 'mediawiki.api', 'mediawiki.ui','jquery.ch
 			if ( namespace == 'Wikipedia:Co-op' ){
 				var api = new mw.Api();
 				var utility = formsGadget.utilities;
+				
 				//Retrieving the post edit feedback if any
-				var postEditMessage = formsGadget.utilities.checkPostEditFeedbackCookie('formsGadgetNotify');
-               	//displaying the post edit message
-               	if(postEditMessage){
+				var postEditMessage = mw.cookie.get('formsGadgetNotify');
+				if (postEditMessage){
+					//clearing the cookie
+					mw.cookie.set('formsGadgetNotify', null);
+					
+               		//displaying the post edit message
 					mw.notify(postEditMessage,{autoHide:false});
                	}
 
@@ -1019,8 +981,8 @@ mw.loader.using( ['jquery.ui.dialog', 'mediawiki.api', 'mediawiki.ui','jquery.ch
 						var config = utility.stripWhiteSpace(formsGadgetConfig[formsGadgetMode]);
 						formsGadget['formDict'] = config;
 						//Cleanup
-						$('.formsGadget .ui-dialog-title').html(config.config['dialog-title']);
-						formsGadget['wikiSectionTree'] = new formsGadget.tree();
+						$('.formsGadget .ui-dialog-title').text(config.config['dialog-title']);
+						formsGadget['wikiSectionTree'] = new formsGadget.Tree();
 						formsGadget.openDialog();
 						formsGadget.createForm(config);
 						formsGadget.type = formsGadgetMode;

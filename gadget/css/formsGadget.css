@@ -49,12 +49,13 @@
 	text-align: right;
 	margin: 10px 0px;
 }
+
 /*Check*/
 .formsGadget .messageDescription{
 	margin: 10px 0px;
 }
 
-.formsGadget textarea,.formsGadget input[type=textbox],.formsGadget input[type=number]{
+.formsGadget textarea,.formsGadget input[type=text],.formsGadget input[type=number]{
 	outline: 0px;
 	padding: 14px 7px;
 	resize: none;
@@ -64,7 +65,7 @@
 	margin-bottom: 1em;
 }
 
-.formsGadget textarea:focus, .formsGadget input[type=textbox]:focus{
+.formsGadget textarea:focus, .formsGadget input[type=text]:focus{
 	border-left-width: 6px;
 	border-left-color:#4091ed;
 }
@@ -126,7 +127,7 @@ div.grantsHide{
 	margin-right: 30px;
 }
 
-.formsGadget input[type=textbox],.formsGadget input[type=number]{
+.formsGadget input[type=text],.formsGadget input[type=number]{
 	padding: 7px;
 }
 
@@ -172,7 +173,7 @@ div.grantsHide{
 .formsGadget img{
 	height: 100px;
 }
-.formsGadget input[type=textbox]{
+.formsGadget input[type=text]{
 	margin: 0px 0px 10px 0px;
 	width: 90%;
 }
