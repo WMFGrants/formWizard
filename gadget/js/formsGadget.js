@@ -59,6 +59,7 @@ var formsGadget = {
 		 * Path to the gadget config file
 		 */
 		'configPath' : 'Wikipedia:Co-op/Config/Co-op',
+		'apiUrl' : 'https://en.wikipedia.org/w/api.php?callback=?',
 		'grantType' : function(){
 			var grant = mw.config.get('wgTitle').split('/')[0].replace(/ /g,'_');
 			return grant;
@@ -147,7 +148,7 @@ var formsGadget = {
 		'checkTitle' : function(string,exists,titleStem,type){
 			var that = this;
 			//Url to the api
-			var apiUrl = 'https://en.wikipedia.org/w/api.php?callback=?';
+			var apiUrl = formsGadget.utilities.apiUrl;
 			var title = titleStem + string;
 			var searchDict = {
 					'action':'query',
@@ -253,7 +254,7 @@ var formsGadget = {
 	 		if (dict['id']){
 	 			input.id = dict['id'];
 	 		}
-	 		
+	 		input.setAttribute('type','text');
 	 		input.setAttribute('class',className);
 	 		input.setAttribute('placeholder',config['placeholder']);
 	 		input.setAttribute('maxlength',config['characterLength']);
@@ -288,13 +289,13 @@ var formsGadget = {
 		 						$('#formsDialogExpand [elemType="button"]').trigger('enableButtons');
 			 					if(typeof(callback) === 'function' && that.found){
 			 						//Api url
-			 						var apiUrl = 'https://en.wikipedia.org/w/api.php?callback=?';
+			 						var apiUrl = formsGadget.utilities.apiUrl;
 			 						$.getJSON(apiUrl,{'action':'parse',
 			 									'format':'json',
 			 									'text':'[['+enteredString+']]'
 			 								},function(data){
 			 									console.log(data['parse']['text']['*']); 
-			 									var src = $('<div>').text(data['parse']['text']['*']).find('img').attr('src');
+			 									var src = $('<div>').html(data['parse']['text']['*']).find('img').attr('src');
 			 									if(src){
 			 										callback(element, src);
 			 									}
@@ -629,13 +630,17 @@ var formsGadget = {
 			//Getting the infobox
 			var gettingInfobox = api.get({
 						'format':'json',
-						'action':'parse',
-						'prop':'wikitext',
-						'page': title,
-						'section': 0
+						'action':'query',
+						'prop':'revisions',
+						'rvprop': 'content',
+						'rvsection':0,
+						'titles': title,
 					}).then(function(result){
+						var pages = result.query.pages;
+						var key = Object.keys(result.query.pages)[0];
+						var content = pages[key]['revisions'][0]['*'];
 						var infoboxTemplate = formsGadget.formDict.config['infobox'] ? formsGadget.formDict.config['infobox'] : 'Probox/Idealab';
-						var elements = that.extractInfobox(result.parse.wikitext['*'], infoboxTemplate);
+						var elements = that.extractInfobox(content, infoboxTemplate);
 						var infobox = that.infoboxObjectify(elements['infobox']);
 						var before = elements['before'];
 						var after = elements['after'];

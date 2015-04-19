@@ -66,8 +66,7 @@
 }
 
 .formsGadget textarea:focus, .formsGadget input[type=text]:focus{
-	border-left-width: 6px;
-	border-left-color:#4091ed;
+	box-shadow: inset .45em 0 0 #5088f7;
 }
 
 div.grantsHide{
@@ -101,13 +100,11 @@ div.grantsHide{
 }
 
 .formsGadget input.entryNotSatisfying:focus{
-	border-left-width: 6px;
-	border-left-color: #D11D13;
+	box-shadow: inset .45em 0 0 #D11D13;
 }
 
 .formsGadget input.entrySatisfying:focus{
-	border-left-width: 6px;
-	border-left-color: #347BFF;
+	box-shadow: inset .45em 0 0 #5088f7;
 }
 
 .formsGadget .title{
