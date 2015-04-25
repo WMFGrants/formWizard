@@ -56,9 +56,9 @@ var formsGadget = {
 		/*
 		 * Path to the gadget config file
 		 */
-		'configPath' : 'Wikipedia:Co-op/Config/Co-op',
+		'configPath' : 'Wikipedia:FormWizard/Config/',
 		'apiUrl' : 'https://en.wikipedia.org/w/api.php?callback=?',
-		'grantType' : function(){
+		'gadgetNamespace' : function(){
 			var grant = mw.config.get('wgTitle').split('/')[0].replace(/ /g,'_');
 			return grant;
 		},
@@ -968,6 +968,7 @@ $(function() {
 			$('.wp-formsGadget').click(function(e){
 				e.preventDefault();
 				
+				formsGadgetNamespace = utility.gadgetNamespace(); 
 				formsGadgetType = $(this).attr('data-type') || 'Idea';
 				formsGadgetMode = $(this).attr('data-mode') || 'create';
 				
@@ -977,7 +978,7 @@ $(function() {
 				
 				$('#formsDialogExpand .loading').show();
 				
-				var configFullPath = utility.configPath+'/'+formsGadgetType;
+				var configFullPath = utility.configPath+'/'+formsGadgetNamespace+'/'+formsGadgetType;
 				var configUrl = 'https://en.wikipedia.org/w/index.php?title='+configFullPath+'&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400';
 				//Get the config for the language above
 				$.when(jQuery.getScript(configUrl)).then(function(){
