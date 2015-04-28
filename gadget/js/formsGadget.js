@@ -6,7 +6,7 @@
  * |	 before editing.                                                                 |
  * |_____________________________________________________________________________________|
  *
- * "Forms" feature, to be used by the Wikimedia Foundation's Grants Programme
+ * See https://meta.wikimedia.org/wiki/Meta:FormWizard for usage and description.
  */
 //<nowiki>
 var formsGadget = {
@@ -20,7 +20,7 @@ var formsGadget = {
 							modal: true,
 							closeOnEscape: true,
 							resizable: false,
-						
+
 							draggable: false,
 					};
 		var dialog = $('#formsDialogExpand');
@@ -31,7 +31,7 @@ var formsGadget = {
 			this.dialog = $('<div id="formsDialogExpand"></div>').dialog(dialogDict);
 		}
 		dialog.append('<div class="loading"></div>');
-			
+
 	},
 	'dialog' : null,
 	'openPanel': function(){
@@ -47,7 +47,7 @@ var formsGadget = {
 	},
 	'cleanupDialog': function (){
 		if (this.dialog){
-			this.dialog.dialog('destroy');	
+			this.dialog.dialog('destroy');
 		}
 		this.dialog = null;
 		$('#formsDialogExpand').text('');
@@ -56,8 +56,8 @@ var formsGadget = {
 		/*
 		 * Path to the gadget config file
 		 */
-		'configPath' : 'Wikipedia:FormWizard/Config/',
-		'apiUrl' : 'https://en.wikipedia.org/w/api.php?callback=?',
+		'configPath' : 'Wikipedia:FormWizard/Config',
+		'apiUrl' : 'https://test.wikipedia.org/w/api.php?callback=?',
 		'gadgetNamespace' : function(){
 			var grant = mw.config.get('wgTitle').split('/')[0].replace(/ /g,'_');
 			return grant;
@@ -86,12 +86,12 @@ var formsGadget = {
 				}
 				else{
 					return text.slice(0,indexOf)+text.slice(indexOf+4);
-				}	
+				}
 		},
 		/*
-		 * The config files which can be translated with the help of the 
-		 * translation tool generates the dict with the values having a 
-		 * lot of space in the key value pairs. This function strips the 
+		 * The config files which can be translated with the help of the
+		 * translation tool generates the dict with the values having a
+		 * lot of space in the key value pairs. This function strips the
 		 * whitespace.
 		 */
 		'stripWhiteSpace' : function(dict){
@@ -170,14 +170,14 @@ var formsGadget = {
 					else{
 						value = pageExists;
 					}
-					
+
 					if(that.timestamp < timestamp){
 						that.timestamp = timestamp;
 						that.found =  !(value ^ exists) ;
 						//temp
 						console.log('String ',string, 'found ',that.found);
 					}
-					
+
 				});
 		},
 		'inputList': function(type,list,title,dict,role){
@@ -200,7 +200,7 @@ var formsGadget = {
 					input.setAttribute('data-role',true);
 				}
 				input.className = 'inputListItem';
-				
+
 				input.setAttribute('data-add-to-attribute',key);
 				var descriptionText = key.replace(/_/g,' ');
 				descriptionText = descriptionText.slice(0,1).toUpperCase() + descriptionText.slice(1);
@@ -232,7 +232,7 @@ var formsGadget = {
 			var config = this.createTextBoxConfig(this.defaultTextBoxConfig,dict);
 	 		var className  = type == 'small'? 'smallTextBox': 'largeTextBox';
 	 		var div = this.elementContainer();
-	 		
+
 	 		div = this.addText(div,config['title'],'title');
 	 		this.addDescription(dict,div);
 	 		if (type == 'large'){
@@ -293,7 +293,7 @@ var formsGadget = {
 			 									'format':'json',
 			 									'text':'[['+enteredString+']]'
 			 								},function(data){
-			 									console.log(data['parse']['text']['*']); 
+			 									console.log(data['parse']['text']['*']);
 			 									var src = $('<div>').html(data['parse']['text']['*']).find('img').attr('src');
 			 									if(src){
 			 										callback(element, src);
@@ -303,13 +303,13 @@ var formsGadget = {
 		 					}
 		 					else{
 		 						$('#formsDialogExpand [elemType="button"]').trigger('disableButtons');
-		 					} 
+		 					}
 		 				});
-	 				}	
+	 				}
 	 			}
 	 		});
 	 		//To show validation
-	 		
+
 	 			inputElementWrapper = document.createElement('span');
 	 			$(inputElementWrapper).addClass('inputElementWrapper');
 	 			if('validate' in dict){
@@ -320,7 +320,7 @@ var formsGadget = {
 	 			}
 	 			inputElementWrapper.appendChild(input);
 	 			div.appendChild(inputElementWrapper);
-	 			
+
 			return div;
 		},
 		'smallTextBox': function (dict,callback,element) {
@@ -336,8 +336,8 @@ var formsGadget = {
 				this.hiddenInfoboxFields = this.hiddenInfoboxFields.concat(dict['hidden']);
 			}
 			return this.inputList('checkbox',list,dict['title'],dict);
-		}, 
-		
+		},
+
 		'addText': function(container,text,type){
 			var textHolder = $('<p>');
 			textHolder.text(text);
@@ -382,7 +382,7 @@ var formsGadget = {
 			for (elem in values){
 				option = $('<option>').attr('value',values[elem]).text(values[elem]);
 				select.appendChild(option[0]);
-			}			
+			}
 			div.appendChild(select);
 			return div;
 		},
@@ -445,7 +445,7 @@ var formsGadget = {
 			};
 			return button;
 		},
-		'doneButton': function(dict){ 
+		'doneButton': function(dict){
 			var that = this;
 			var button = this.button('done',dict['title']);
 			button.onclick = function(){
@@ -510,22 +510,22 @@ var formsGadget = {
 			var startIndex = markup.indexOf('{{' + infoboxTemplate);
 			var counter = 0;
 			var endIndex = 0;
-			for (i=startIndex;i<markup.length;i++){ 
-				if(markup[i] == '}' && markup[i+1] == '}'){ 
+			for (i=startIndex;i<markup.length;i++){
+				if(markup[i] == '}' && markup[i+1] == '}'){
 						counter++;
-				} 
+				}
 				if(markup[i] == '{' && markup[i+1] == '{'){
 					counter--;
-				} 
+				}
 				if(counter == 0){
-					var endIndex = i+2; 
+					var endIndex = i+2;
 					break;
 				}
 			}
 			if (counter != 0){
 				return '';
 			}
-			var infobox = { 
+			var infobox = {
 				'infobox' : markup.slice(startIndex,endIndex),
 			    'before' : markup.slice(0,startIndex),
 				'after' : markup.slice(endIndex),
@@ -587,7 +587,7 @@ var formsGadget = {
 			var summary = '';
 			var formsConfig = formsGadget.formDict['config'];
 			if (formsConfig['edit-comment-prefix']){
-				summary = formsConfig['edit-comment-prefix'] + ' '; 
+				summary = formsConfig['edit-comment-prefix'] + ' ';
 			}
 			else{
 				summary = formsConfig['edit-comment-default'] + ' ';
@@ -609,9 +609,9 @@ var formsGadget = {
 			var infoboxString = '';
 			var sections = '';
 			var api = new mw.Api();
-			
+
 			var roots = this.wikiSectionTree.roots;
-			
+
 			for (elem in roots){
 				console.log('---------');
 				this.wikiSectionTree.traverse([roots[elem]],1,function(id){
@@ -621,9 +621,9 @@ var formsGadget = {
 					return { 'heading': heading, 'value': value};
 				});
 			}
-			//Disabling buttons on ajax post 
+			//Disabling buttons on ajax post
 			$('#formsDialogExpand [elemType="button"]').trigger('disableButtons');
-			
+
 			//refractor hardcoding '/Toolkit'
 			var title = mw.config.get('wgPageName').replace('/Toolkit','');
 			//Getting the infobox
@@ -708,9 +708,9 @@ var formsGadget = {
 			var page = '';
 			var api = new mw.Api();
 			var pageTitle = $('#formsDialogExpand [page-title]').val();
-			
+
 			var roots = this.wikiSectionTree.roots;
-			
+
 			for (elem in roots){
 				console.log('---------');
 				this.wikiSectionTree.traverse([roots[elem]],1,function(id){
@@ -721,7 +721,7 @@ var formsGadget = {
 					return { 'heading': heading, 'value': value, 'comment': comment };
 				});
 			}
-			
+
 			$('#formsDialogExpand [data-add-to]').each(function(index,elem){
 				var elem = $(elem);
 				if(elem.attr('data-add-to') == 'section' ){
@@ -734,7 +734,7 @@ var formsGadget = {
 					if (elem.attr('data-role')){
 						for (var i=0;i<elem.val(); i++){
 							infobox = infobox + '|'+ elem.attr('data-add-to-attribute') + (i+1) + '=\n';
-						}	
+						}
 					}
 					else if(elem.attr('type') == 'checkbox'){
 						if (elem.is(':checked')){
@@ -761,7 +761,7 @@ var formsGadget = {
 			for(entry in hiddenFields){
 				infobox = infobox + '|' + hiddenFields[entry]['key'] + '=' + hiddenFields[entry]['value'] + '\n';
 			}
-			
+
 			//Hardcoding creator/timestamp
 			infobox = infobox + '|' + 'timestamp = ~~~~~' + '\n' ;
 			infobox = infobox + '|' + 'creator = ' + mw.user.getName() + '\n' ;
@@ -769,14 +769,14 @@ var formsGadget = {
 			var probox = this.formDict.config['infobox'] ? this.formDict.config['infobox'] : 'Probox/Idealab';
 			infobox = '{{' + probox + '\n' + infobox + '}} \n';
 			page = infobox + this.wikiSectionTree.sections;
-			
+
 			/*
 			 * Creating a new page
 			 *
 			 */
-			
+
 			var title = formsGadget.formDict['config']['page-home'] + pageTitle;
-			//Disabling buttons on ajax post 
+			//Disabling buttons on ajax post
 			$('#formsDialogExpand [elemType="button"]').trigger('disableButtons');
 						api.post({
 						'action': 'edit',
@@ -805,7 +805,7 @@ var formsGadget = {
 								token: mw.user.tokens.get('editToken')
 							});
 						}
-						
+
 						// Redirecting to idea page
 						console.log('Successfully created new page');
 						//Cleanup
@@ -820,7 +820,7 @@ var formsGadget = {
 					},function(){
 						$('#formsDialogExpand [elemType="button"]').trigger('enableButtons');
 					});
-			
+
 			console.log(title,page);
 		}
 	},
@@ -828,7 +828,7 @@ var formsGadget = {
 		//cleanup fixing the fallbacks
 		if( !formDict.config['page-home'].match(/\/$/) ){
 			formDict.config['page-home'] = formDict.config['page-home'] + '/';
-		} 
+		}
 		this.formDict = formDict;
 		this.formElement.formDict = formDict;
 		this.formElement.wikiSectionTree = this.wikiSectionTree;
@@ -868,8 +868,8 @@ var formsGadget = {
 						else{
 							this.wikiSectionTree.addLink(node);
 						}
-						
-					}  			
+
+					}
 				}
 				dialogInternal.appendChild(panel);
 			}
@@ -913,7 +913,7 @@ var formsGadget = {
 				else{
 					startNode.child = [endNode];
 				}
-				delete rootList[endNode.id]; 
+				delete rootList[endNode.id];
 			}
 			else{
 				getNode(startId);
@@ -944,42 +944,40 @@ var formsGadget = {
 		};
 	}
 };
-	
+
 $(function() {
 	(function(){
-		//Temporarily removing namespace check
-		var namespace = mw.config.values['wgPageName'].split('/')[0];
-		// namespace == 'Wikipedia:Co-op'
-		//Use the above to check if the gadget has to be enabled or not on a given page.
-		if ( namespace == 'Wikipedia:Co-op' ){
+		var namespace = mw.config.get('wgCanonicalNamespace');
+		//gadget only enabled on page if namespace matches below
+		if ( namespace == 'Project' ){
 			var api = new mw.Api();
 			var utility = formsGadget.utilities;
-			
+
 			//Retrieving the post edit feedback if any
 			var postEditMessage = mw.cookie.get('formsGadgetNotify');
 			if (postEditMessage){
 				//clearing the cookie
 				mw.cookie.set('formsGadgetNotify', null);
-				
+
            		//displaying the post edit message
 				mw.notify(postEditMessage,{autoHide:false});
            	}
 
 			$('.wp-formsGadget').click(function(e){
 				e.preventDefault();
-				
-				formsGadgetNamespace = utility.gadgetNamespace(); 
-				formsGadgetType = $(this).attr('data-type') || 'Idea';
+
+				formsGadgetNamespace = utility.gadgetNamespace();
+				formsGadgetType = $(this).attr('data-type') || 'Learner';
 				formsGadgetMode = $(this).attr('data-mode') || 'create';
-				
+
 				formsGadget.cleanupDialog();
 				formsGadget.openDialog();
 				formsGadget.openPanel();
-				
+
 				$('#formsDialogExpand .loading').show();
-				
+
 				var configFullPath = utility.configPath+'/'+formsGadgetNamespace+'/'+formsGadgetType;
-				var configUrl = 'https://en.wikipedia.org/w/index.php?title='+configFullPath+'&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400';
+				var configUrl = 'https://test.wikipedia.org/w/index.php?title='+configFullPath+'&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400';
 				//Get the config for the language above
 				$.when(jQuery.getScript(configUrl)).then(function(){
 					var config = utility.stripWhiteSpace(formsGadgetConfig[formsGadgetMode]);
