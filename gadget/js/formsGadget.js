@@ -6,7 +6,7 @@
  * |	 before editing.                                                                 |
  * |_____________________________________________________________________________________|
  *
- * "Forms" feature, to be used by the Wikimedia Foundation's Grants Programme
+ * See https://meta.wikimedia.org/wiki/Meta:FormWizard for usage and description.
  */
 //<nowiki>
 
