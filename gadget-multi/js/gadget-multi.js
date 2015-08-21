@@ -11,7 +11,7 @@
 //<nowiki>
 
 $(function(){
-	var namespace = mw.config.get('wgCanonicalNamespace');
+	var namespace = mw.config.values['wgPageName'].split('/')[0];
 	if ( namespace == 'Grants' || namespace == 'Research'){
 		mw.loader.load( 'ext.gadget.formWizard-core' );
 	}

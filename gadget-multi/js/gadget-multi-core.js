@@ -281,7 +281,7 @@ var formsGadget = {
 	 				if( 'validate' in dict && enteredString){
 		 				var exists = dict['validate'] == 'exists' ? 1:0;
 		 				//$(this).addClass(checkTitle(enteredString,exists));
-		 				var titleStem = 'image' in dict ? '' : that.formDict.config['page-home'];
+		 				var titleStem = 'image' in dict ? '' : that.formDict.config['page-title-stem'];
 		 				$.when(that.checkTitle(enteredString,exists,titleStem,dict['type'])).then(function(){
 		 					//Cleanpup & remove redundant code
 		 					$(inputTextBox).removeClass('entrySatisfying entryNotSatisfying');
@@ -795,7 +795,7 @@ var formsGadget = {
 			 *
 			 */
 			
-			var title = formsGadget.formDict['config']['page-home'] + pageTitle;
+			var title = formsGadget.formDict['config']['page-title-stem'] + pageTitle;
 			//Disabling buttons on ajax post 
 			$('#formsDialog [elemType="button"]').trigger('disableButtons');
 						api.post({
@@ -846,9 +846,7 @@ var formsGadget = {
 	},
 	'createForm' : function(formDict){
 		//cleanup fixing the fallbacks
-		if( !formDict.config['page-home'].match(/\/$/) ){
-			formDict.config['page-home'] = formDict.config['page-home'] + '/';
-		} 
+		formDict.config['page-title-stem'] = formDict.config['namespace'] + formDict.config['portal-page'];
 		this.formDict = formDict;
 		this.formElement.formDict = formDict;
 		this.formElement.wikiSectionTree = this.wikiSectionTree;
